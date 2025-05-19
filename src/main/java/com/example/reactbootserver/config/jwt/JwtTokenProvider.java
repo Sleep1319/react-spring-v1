@@ -33,23 +33,16 @@ public class JwtTokenProvider {
     }
 
     //Assess토큰 생성
-    public String createAssessToken(Long memberId, String role) {
-        return createToken(memberId, role, accessTokenValidity);
-    }
-
-    //리프레쉬 토큰 생성
-    public String createRefreshToken(Long memberId, String role) {
-        return createToken(memberId, role, refreshTokenValidity);
-    }
-
-    //공통 메서드
-    private String createToken(Long memberId, String role, long validityTime) {
+    public String createAccessToken(Long memberId, String email, String username, String nickname, String role) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + validityTime);
+        Date expiry = new Date(now.getTime() + accessTokenValidity);
 
         return Jwts.builder()
                 .claims()
                 .subject(String.valueOf(memberId))
+                .add("email", email)
+                .add("username", username)
+                .add("nickname", nickname)
                 .add("role", role)
                 .and()
                 .issuedAt(now)
@@ -57,6 +50,38 @@ public class JwtTokenProvider {
                 .signWith(key)
                 .compact();
     }
+
+    //리프레쉬 토큰 생성
+    public String createRefreshToken(Long memberId) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + refreshTokenValidity);
+
+        return Jwts.builder()
+                .subject(String.valueOf(memberId))
+                .issuedAt(now)
+                .expiration(expiry)
+                .signWith(key)
+                .compact();
+    }
+
+//    //공통 메서드
+//    private String createToken(Long memberId, String email, String username, String nickname, String role, long validityTime) {
+//        Date now = new Date();
+//        Date expiry = new Date(now.getTime() + validityTime);
+//
+//        return Jwts.builder()
+//                .claims()
+//                .subject(String.valueOf(memberId))
+//                .add("email", email)
+//                .add("username", username)
+//                .add("nickname", nickname)
+//                .add("role", role)
+//                .and()
+//                .issuedAt(now)
+//                .expiration(expiry)
+//                .signWith(key)
+//                .compact();
+//    }
 
     public Claims getClaims(String token) {
         return Jwts.parser()

@@ -33,9 +33,10 @@ public class Member {
 
     private String providerId;
 
-    public Member(String email, String password, String nickname, Role role, SocialType socialType, String providerId) {
+    public Member(String email, String password, String username, String nickname, Role role, SocialType socialType, String providerId) {
         this.email = email;
         this.password = password;
+        this.username = username;
         this.nickname = nickname;
         this.role = role;
         this.socialType = socialType;
